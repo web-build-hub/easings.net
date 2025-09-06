@@ -18,6 +18,12 @@ if (listFunction) {
 		const animationName = item.getAttribute("data-name");
 		const cssFunc = item.getAttribute("data-func");
 
+		item.addEventListener("click", (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			(window as any).navigateChart(animationName);
+		});
+
 		item.addEventListener("mouseenter", () => {
 			forNodeList(listFunction, (other, otherIndex) => {
 				if (otherIndex !== index) {

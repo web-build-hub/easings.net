@@ -4,9 +4,6 @@ mixin footer
 	.footer
 		.footer__group
 			.footer__copyright
-				+external-link("https://sitnik.ru/").footer__link {{ authors.sitnik }}
-				!= ` {{ authors.separator }} `
-				+external-link("https://solovev.one/").footer__link {{ authors.solovev }}
 
 			.footer__list
 				select.footer__theme(aria-label="Select theme")
@@ -14,8 +11,3 @@ mixin footer
 					option(value="light") {{ theme.light }}
 					option(value="dark") {{ theme.dark }}
 
-			.footer__lang.footer__list
-				ul(aria-label="Select language").
-					{{#langList}}
-						{{{.}}}
-					{{/langList}}

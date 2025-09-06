@@ -19,6 +19,22 @@ themeSelect.addEventListener("change", () => {
 	changeTheme(themeSelect.value);
 });
 
+function check(): void {
+	if (document.body.classList.contains("vscode-dark")) {
+		changeTheme("dark");
+	} else if (document.body.classList.contains("vscode-light")) {
+		changeTheme("light");
+	} else {
+		changeTheme("");
+	}
+}
+check();
+const observer = new MutationObserver(check);
+observer.observe(document.body, {
+	attributes: true,
+	attributeFilter: ["class"],
+});
+
 function changeTheme(value: string): void {
 	switch (value) {
 		case "light":

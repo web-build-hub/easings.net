@@ -15,13 +15,13 @@ html(lang="{{ lang_code }}" dir="{{ dir }}")
 		title {{ title }}
 		meta(content="{{ description }}" name="description")
 		meta(name="theme-color" content="#1473e6")
-		link(rel="manifest" href="./manifest.webmanifest")
+		//- link(rel="manifest" href="./manifest.webmanifest")
 		link(rel="icon" type="image/png" href="./icons/96.png")
 		link(rel="mask-icon" href="./icons/mask.svg" color="#1473e6" sizes="any")
 
-		meta(property="og:url" content="http://easings.net/")
-		meta(property="og:image" content="./icons/192.png")
-		meta(property="og:description" content="{{ share }}")
+		//- meta(property="og:url" content="http://easings.net/")
+		//- meta(property="og:image" content="./icons/192.png")
+		//- meta(property="og:description" content="{{ share }}")
 
 		link(href="./index.css" rel="stylesheet")
 
@@ -70,4 +70,4 @@ html(lang="{{ lang_code }}" dir="{{ dir }}")
 		script(src='./index.ts' async)
 		link(href="./keyframes.css" rel="stylesheet")
 
-		| {{{ service_worker }}}
+		//- | {{{ service_worker }}}

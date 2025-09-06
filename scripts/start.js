@@ -11,6 +11,7 @@ const format = require("./helpers/format");
 const i18nDir = path.join(process.cwd(), "i18n");
 const langList = fs
 	.readdirSync(i18nDir)
+	.filter((filename) => filename === "en.yml")
 	.filter((filename) => !/^_/.test(filename))
 	.filter((filename) => /\.ya?ml$/i.test(filename))
 	.map((filename) => fs.readFileSync(path.join(i18nDir, filename)))

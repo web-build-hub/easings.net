@@ -7,7 +7,7 @@ const Mustache = require("mustache");
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 const unlink = promisify(fs.unlink);
-const copyFile = promisify(fs.copyFile);
+// const copyFile = promisify(fs.copyFile);
 
 const Parcel = require("parcel-bundler");
 
@@ -25,6 +25,7 @@ const i18nDir = path.join(process.cwd(), "i18n");
  */
 const langList = fs
 	.readdirSync(i18nDir)
+	.filter((filename) => filename === "en.yml")
 	.filter((filename) => !/^_/.test(filename) && /\.ya?ml$/i.test(filename))
 	.map((filename) => fs.readFileSync(path.join(i18nDir, filename)))
 	.map((file) => yamlParse.load(file))
@@ -50,22 +51,26 @@ const htmlMinifyOptions = {
 
 const shortCssClassName = generateCssClassName();
 
+const distDir =
+	"/Users/mora/Workspace/mora/durka-vscode/res/webview/easings.net";
+
 const bundler = new Parcel("./src/index.pug", {
 	sourceMaps: false,
 	scopeHoist: true,
 	publicUrl: "./",
+	outDir: fs.existsSync(distDir) ? distDir : "./dist",
 });
 
-const errorBundler = new Parcel("./src/404.pug", {
-	sourceMaps: false,
-	scopeHoist: true,
-	publicUrl: "./",
-});
+// const errorBundler = new Parcel("./src/404.pug", {
+// 	sourceMaps: false,
+// 	scopeHoist: true,
+// 	publicUrl: "./",
+// });
 
 async function build() {
-	await errorBundler.bundle();
+	// await errorBundler.bundle();
 
-	let serviceWorkerCode = await readFile("./src/sw.js", "utf8");
+	// let serviceWorkerCode = await readFile("./src/sw.js", "utf8");
 	const bundleHome = await bundler.bundle();
 	const bundleAssets = findAssets(bundleHome);
 
@@ -119,7 +124,7 @@ async function build() {
 
 	await writeFile(keyframesFile.name, stylesKeyframe.css);
 
-	await copyFile("./src/favicon.ico", "./dist/favicon.ico");
+	// await copyFile("./src/favicon.ico", "./dist/favicon.ico");
 
 	const styles = await PostCSS([cssPlugin, MQPacker]).process(cssData, {
 		from: cssFile.name,
@@ -148,14 +153,14 @@ async function build() {
 
 	await writeFile(jsFile.name, minifyJS.code);
 
-	bundleAssets.forEach((asset) => {
-		serviceWorkerCode = serviceWorkerCode.replace(
-			new RegExp(`['"]${asset.entryName}['"]`, "g"),
-			`"/${path.basename(asset.name)}"`
-		);
-	});
+	// bundleAssets.forEach((asset) => {
+	// 	serviceWorkerCode = serviceWorkerCode.replace(
+	// 		new RegExp(`['"]${asset.entryName}['"]`, "g"),
+	// 		`"/${path.basename(asset.name)}"`
+	// 	);
+	// });
 
-	serviceWorkerCode = (await Terser.minify(serviceWorkerCode)).code;
+	// serviceWorkerCode = (await Terser.minify(serviceWorkerCode)).code;
 
 	function htmlPlugin(lang = "en") {
 		return (tree) => {
@@ -207,8 +212,8 @@ async function build() {
 		};
 	}
 
-	const manifest = bundleAssets.find((asset) => asset.type === "webmanifest");
-	const manifestFile = await readFile(manifest.name, "utf8");
+	// const manifest = bundleAssets.find((asset) => asset.type === "webmanifest");
+	// const manifestFile = await readFile(manifest.name, "utf8");
 
 	await bundleAssets
 		.filter((i) => i.type === "html")
@@ -217,41 +222,41 @@ async function build() {
 			const html = PostHTML([]).process(file, { sync: true }).html;
 
 			if (/\/index\.html$/i.test(item.name)) {
-				const distDirName = path.dirname(item.name);
+				// const distDirName = path.dirname(item.name);
 
-				await langList.map(async (lang) => {
-					const viewData = format(
-						lang,
-						langList.map((dic) => ({
-							code: dic.lang_code,
-							name: dic.lang_name,
-						}))
-					);
+				// await langList.map(async (lang) => {
+				// 	const viewData = format(
+				// 		lang,
+				// 		langList.map((dic) => ({
+				// 			code: dic.lang_code,
+				// 			name: dic.lang_name,
+				// 		}))
+				// 	);
 
-					const htmlFragment = Mustache.render(html, viewData);
-					const manifestLang = Mustache.render(manifestFile, viewData);
+				// 	const htmlFragment = Mustache.render(html, viewData);
+				// 	const manifestLang = Mustache.render(manifestFile, viewData);
 
-					await writeFile(
-						path.join(distDirName, `sw.${lang.lang_code}.js`),
-						serviceWorkerCode.replace("/:lang", `/${lang.lang_code}`)
-					);
+				// 	await writeFile(
+				// 		path.join(distDirName, `sw.${lang.lang_code}.js`),
+				// 		serviceWorkerCode.replace("/:lang", `/${lang.lang_code}`)
+				// 	);
 
-					await writeFile(
-						path.join(distDirName, `manifest.${lang.lang_code}.json`),
-						manifestLang
-					);
+				// 	await writeFile(
+				// 		path.join(distDirName, `manifest.${lang.lang_code}.json`),
+				// 		manifestLang
+				// 	);
 
-					const htmlMinFragment = await PostHTML([
-						PostHTMLNano(htmlMinifyOptions),
-					])
-						.use(htmlPlugin(lang.lang_code))
-						.process(htmlFragment);
+				// 	const htmlMinFragment = await PostHTML([
+				// 		PostHTMLNano(htmlMinifyOptions),
+				// 	])
+				// 		.use(htmlPlugin(lang.lang_code))
+				// 		.process(htmlFragment);
 
-					await writeFile(
-						path.join(distDirName, `${lang.lang_code}.html`),
-						htmlMinFragment.html.replace(/>\s</g, "><")
-					);
-				});
+				// 	await writeFile(
+				// 		path.join(distDirName, `${lang.lang_code}.html`),
+				// 		htmlMinFragment.html.replace(/>\s</g, "><")
+				// 	);
+				// });
 
 				const engLang = langList.find((lang) => lang.lang_code === "en");
 				const htmlFragment = Mustache.render(

@@ -18,11 +18,9 @@ let isReverse = false;
 let currentName: string;
 let currentFunc: string;
 let currentType: string;
-
 forNodeList(casesButtonsList, (button) => {
 	button.addEventListener("click", () => {
 		const newType = button.getAttribute("data-type");
-
 		setTransition(cardTarget, newType);
 
 		if (currentName) {

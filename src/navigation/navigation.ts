@@ -7,10 +7,10 @@ import {
 	noTimingFunction,
 	selectorInfo,
 	selectorInfoChart,
-	selectorDetails,
+	// selectorDetails,
 } from "../helpers/constants";
-import { forNodeList } from "../helpers/forNodeList";
-import { getElement, getElementsList } from "../helpers/getElement";
+// import { forNodeList } from "../helpers/forNodeList";
+import { getElement } from "../helpers/getElement";
 import {
 	setInfoFunc,
 	setInfoName,
@@ -48,33 +48,33 @@ info.addEventListener("click", () => {
 	requestAnimationFrame(resizeInfo);
 });
 
-const chartId = window.location.hash.slice(1);
-if (chartId) {
-	navigateChart(chartId);
-}
+// const chartId = window.location.hash.slice(1);
+// if (chartId) {
+// 	navigateChart(chartId);
+// }
 
-window.addEventListener(
-	"hashchange",
-	() => {
-		if (window.getSelection) {
-			window.getSelection().removeAllRanges();
-		}
-		forNodeList(getElementsList(selectorDetails), (item) => {
-			if (item.hasAttribute("open")) {
-				item.removeAttribute("open");
-			}
-		});
+// window.addEventListener(
+// 	"hashchange",
+// 	() => {
+// 		if (window.getSelection) {
+// 			window.getSelection().removeAllRanges();
+// 		}
+// 		forNodeList(getElementsList(selectorDetails), (item) => {
+// 			if (item.hasAttribute("open")) {
+// 				item.removeAttribute("open");
+// 			}
+// 		});
 
-		const id = window.location.hash.slice(1);
+// 		const id = window.location.hash.slice(1);
 
-		if (id) {
-			navigateChart(id);
-		} else {
-			navigateMain();
-		}
-	},
-	false
-);
+// 		if (id) {
+// 			navigateChart(id);
+// 		} else {
+// 			navigateMain();
+// 		}
+// 	},
+// 	false
+// );
 
 window.addEventListener("keydown", (event) => {
 	const keyName = "escape";
@@ -237,3 +237,8 @@ function resizeInfo(): void {
 		width: infoPosition.width + overlayOffsetHorizontal,
 	});
 }
+
+(window as any).navigateChart = navigateChart;
+document.getElementById("info-button").addEventListener("click", () => {
+	navigateMain();
+});
